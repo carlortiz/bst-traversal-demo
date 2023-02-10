@@ -39,47 +39,45 @@ SPECIAL_NODE_3 = 8
 
 class Button:
 
-    def __init__(self, color, x, y, width, height, label=''):
+    def __init__(self, color, pos_x, pos_y, width, height, label=''):
         self.color = color
-        self.x = x
-        self.y = y
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.width = width
         self.height = height
         self.label = label
 
     def draw_border(self, win):
-        # see if line below can be improved
-        outer_box = (self.x - 3, self.y - 3,
+        outer_box = (self.pos_x - 3, self.pos_y - 3,
                      self.width + 6, self.height + 6)
         pygame.draw.rect(win, DARK, outer_box, 0)
 
     def draw_label(self, win):
         text = GEORGIA.render(self.label, True, BLACK)
-        # see if lines below can be improved
-        text_x = self.x + (self.width/2 - text.get_width()/2)
-        text_y = self.y + (self.height/2 - text.get_height()/2)
+        text_x = self.pos_x + (self.width/2 - text.get_width()/2)
+        text_y = self.pos_y + (self.height/2 - text.get_height()/2)
         win.blit(text, (text_x, text_y))
 
     def draw_button(self, win):
         self.draw_border(win)
-        inner_box = (self.x, self.y, self.width, self.height)
+        inner_box = (self.pos_x, self.pos_y, self.width, self.height)
         pygame.draw.rect(win, self.color, inner_box, 0)
         self.draw_label(win)
 
     def has_mouse(self, mouse_position):
-        within_x = self.x < mouse_position[0] < self.x + self.width
-        within_y = self.y < mouse_position[1] < self.y + self.height
-        if within_x and within_y:
+        within_pos_x = self.pos_x < mouse_position[0] < self.pos_x + self.width
+        within_pos_y = self.pos_y < mouse_position[1] < self.pos_y + self.height
+        if within_pos_x and within_pos_y:
             return True
         return False
 
 
 class Node:
 
-    def __init__(self, color, x, y, radius, value):
+    def __init__(self, color, pos_x, pos_y, radius, value):
         self.color = color
-        self.x = x
-        self.y = y
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.radius = radius
         self.value = value
         self.left = None
@@ -87,32 +85,32 @@ class Node:
 
     def draw_value(self, win):
         value = GEORGIA.render(str(self.value), True, BLACK)
-        value_x = self.x - value.get_width()/2
-        value_y = self.y - value.get_height()/2
+        value_x = self.pos_x - value.get_width()/2
+        value_y = self.pos_y - value.get_height()/2
         win.blit(value, (value_x, value_y))
 
     def draw_border(self, win,):
         border_radius = self.radius + 3
-        pygame.draw.circle(win, DARK, (self.x, self.y), border_radius)
+        pygame.draw.circle(win, DARK, (self.pos_x, self.pos_y), border_radius)
 
     def draw_node(self, win):
         self.draw_border(win)
-        pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+        pygame.draw.circle(win, self.color, (self.pos_x, self.pos_y), self.radius)
         self.draw_value(win)
 
     def create_new_left(self, new_val):
-        new_x = self.x - NODE_GAP
-        new_y = self.y + NODE_GAP
-        self.left = Node(EGG_WHITE, new_x, new_y, NODE_RADIUS, new_val)
+        new_pos_x = self.pos_x - NODE_GAP
+        new_pos_y = self.pos_y + NODE_GAP
+        self.left = Node(EGG_WHITE, new_pos_x, new_pos_y, NODE_RADIUS, new_val)
         if self.left.value is SPECIAL_NODE_1:
-            self.left.x -= NODE_GAP
+            self.left.pos_x -= NODE_GAP
 
     def create_new_right(self, new_val):
-        new_x = self.x + NODE_GAP
-        new_y = self.y + NODE_GAP
+        new_x = self.pos_x + NODE_GAP
+        new_y = self.pos_y + NODE_GAP
         self.right = Node(EGG_WHITE, new_x, new_y, NODE_RADIUS, new_val)
         if self.right.value == SPECIAL_NODE_2:
-            self.right.x += NODE_GAP
+            self.right.pos_x += NODE_GAP
 
     def insert(self, new_val):
         if new_val < self.value:
@@ -169,14 +167,14 @@ class Node:
         return gap
 
     def draw_branch(self, node, win):
-        start = (self.x, self.y)
+        start = (self.pos_x, self.pos_y)
         node_gap = self.calculate_node_gap()
 
         if node.left is not None:
-            left_end = (node.x - node_gap, node.y + NODE_GAP)
+            left_end = (node.pos_x - node_gap, node.pos_y + NODE_GAP)
             pygame.draw.line(win, BLACK, start, left_end, 13)
         if node.right is not None:
-            right_end = (node.x + node_gap, node.y + NODE_GAP)
+            right_end = (node.pos_x + node_gap, node.pos_y + NODE_GAP)
             pygame.draw.line(win, BLACK, start, right_end, 13)
 
     def draw_all_branches(self, node, win):
@@ -201,8 +199,8 @@ def create_button(label, spacing_factor):
     return new_button
 
 
-def create_node(x, y, value):
-    new_node = Node(EGG_WHITE, x, y, NODE_RADIUS, value)
+def create_node(pos_x, pos_y, value):
+    new_node = Node(EGG_WHITE, pos_x, pos_y, NODE_RADIUS, value)
     return new_node
 
 
@@ -220,11 +218,11 @@ def main():
     preorder_button = create_button(PREORDER_LABEL, 1)
     postorder_button = create_button(POSTORDER_LABEL, 2)
 
-    nodes = [3, 10, 1, 6, 14, 4, 7, 13, 29, 5, -2]
+    nodes = [2, 1, 5, 9, 14]
 
-    eight = create_node(600, 215, 8)
+    root = create_node(600, 215, 7)
     for node in nodes:
-        eight.insert(node)
+        root.insert(node)
 
     # loop to keep window running
     run = True
@@ -233,8 +231,8 @@ def main():
         preorder_button.draw_button(win)
         postorder_button.draw_button(win)
 
-        eight.draw_all_branches(eight, win)
-        eight.draw_all_nodes(eight, win)
+        root.draw_all_branches(root, win)
+        root.draw_all_nodes(root, win)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -249,11 +247,11 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if inorder_button.has_mouse(mouse_position):
-                    eight.inorder_traversal(eight, win)
+                    root.inorder_traversal(root, win)
                 if preorder_button.has_mouse(mouse_position):
-                    eight.preorder_traversal(eight, win)
+                    root.preorder_traversal(root, win)
                 if postorder_button.has_mouse(mouse_position):
-                    eight.postorder_traversal(eight, win)
+                    root.postorder_traversal(root, win)
 
         pygame.display.update()
 
