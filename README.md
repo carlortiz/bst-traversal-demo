@@ -1,6 +1,6 @@
 # BST - Traversal Visualizer
 
-Binary Search Tree - Inorder, Preorder, and Postorder Traversal
+Binary Search Tree - Inorder, Preorder, and Postorder Traversal Visualizer
 
 <p align="center"> 
   <img src="https://user-images.githubusercontent.com/45545195/213523311-573051f7-b1bf-40ac-9849-cb17731c39b8.png" width=110% height=145%>
