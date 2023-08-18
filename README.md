@@ -1,5 +1,4 @@
-# BST Traversal Demo
-
+# Tree Traversal
 A pygame program made to demonstrate binary search tree traversals.
 
 <p align="center"> 
